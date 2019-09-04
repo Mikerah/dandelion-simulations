@@ -153,7 +153,7 @@ class LineSimulator(Simulator):
 					spy_mapping[spy].append(SpyInfo(spy, tail, node))
 					break
 			if self.verbose:
-				print 'Node ', node, ' traversed ', path_length, 'hops'
+				print('Node ', node, ' traversed ', path_length, 'hops')
 			hops[path_length] +=1
 
 		return spy_mapping, hops
@@ -192,17 +192,17 @@ class FirstSpyEstimator(object):
 		precision = 0
 		recall = 0
 		if self.verbose:
-			print '\n'
+			print('\n')
 
 		exits = {}
-		for spy, info in spy_mapping.iteritems():
+		for spy, info in spy_mapping.items():
 			if self.verbose:
-				print 'spy', spy
+				print('spy', spy)
 				exit_list = [item.exit_node for item in info]
 				sources = [item.source for item in info]
 				for exit in set(exit_list):
-					print 'exit', exit
-					print 'sources', [sources[i] for i in range(len(exit_list)) if exit_list[i] == exit]
+					print('exit', exit)
+					print('sources', [sources[i] for i in range(len(exit_list)) if exit_list[i] == exit])
 			
 			for item in info:
 				# if verbose:
@@ -213,14 +213,14 @@ class FirstSpyEstimator(object):
 				else:
 					exits[item.exit_node].append(item.source)
 		nodes_wards = np.zeros(int(2*len(self.A.nodes()))) 
-		for exit, ward in exits.iteritems():
+		for exit, ward in exits.items():
 			nodes_wards[len(ward)] +=1
 			if exit in ward:
 				precision += 1.0 / len(ward)
 				recall += 1.0
 		if self.verbose:
-			print 'num_honest_nodes', self.num_honest_nodes
-			print 'total precision', precision
+			print('num_honest_nodes', self.num_honest_nodes)
+			print('total precision', precision)
 		precision = precision / self.num_honest_nodes
 		recall = recall / self.num_honest_nodes
 		
@@ -251,7 +251,7 @@ class MaxWeightEstimator(object):
 			honest_node_mapping[node] = cnt
 			inv_honest_node_mapping[cnt] = node
 			cnt += 1
-		honest_node_indices = honest_node_mapping.values()
+		honest_node_indices = list(honest_node_mapping.values())
 		# print 'honest_node_mapping', honest_node_mapping
 
 		# Next, create a random mapping, to randomize the labeling of nodes,
@@ -273,7 +273,7 @@ class MaxWeightEstimator(object):
 		H.add_nodes_from(honest_nodes)	# servers
 		H.add_nodes_from(messages) 		# messages
 		for msg in self.honest_nodes: 	# for each real message tag
-			for src, likelihood in self.weights[msg].iteritems():	# and for each candidate source (+likelihood)
+			for src, likelihood in self.weights[msg].items():	# and for each candidate source (+likelihood)
 				# add an edge from the relabeled source to the relabeled message with the appropriate weight
 
 				H.add_edge(mapping[honest_node_mapping[src]], -msg_mapping[honest_node_mapping[msg]], weight = likelihood)
@@ -427,7 +427,7 @@ class MaxWeightLineSimulator(LineSimulator):
 		self.weights = {}
 		
 		# first, map the spy info to wards: (exit, messages) tuples
-		for spy, info in spy_mapping.iteritems():
+		for spy, info in spy_mapping.items():
 			
 			for item in info: # for each message that exited to spy
 				if item.exit_node not in exits:
@@ -439,7 +439,7 @@ class MaxWeightLineSimulator(LineSimulator):
 			at the given exit node. The likelihoods are equal for 
 			all nodes at a given exit node.
 		'''
-		for exit, ward in exits.iteritems():
+		for exit, ward in exits.items():
 			relayed_ward = [item[0] for item in ward if item[1]]
 			not_relayed_ward = [item[0] for item in ward if not item[1]]
 
@@ -474,7 +474,7 @@ class MaxWeightLineSimulator(LineSimulator):
 
 		likelihoods = {}
 		shortest_paths = nx.shortest_path(self.A, target = exit)
-		for source, path in shortest_paths.iteritems():
+		for source, path in shortest_paths.items():
 			if source in spies:
 				continue
 			if (not relayed_to_spy) and (source == exit):
@@ -565,7 +565,7 @@ class MaxWeightLineSimulatorUnknownTerminus(MaxWeightLineSimulator):
 					spy_mapping[spy].append(SpyInfo(spy, tail, node))
 					break
 			if self.verbose:
-				print 'Node ', node, ' traversed ', path_length, 'hops'
+				print('Node ', node, ' traversed ', path_length, 'hops')
 
 		return spy_mapping
 
@@ -667,7 +667,7 @@ class DiffusionSimulator(Simulator):
 
 				# add next to boundary, remove the infecting node if it is eclipsed
 			if self.verbose:
-				print 'Node ', node, ' traversed ', path_length, 'hops'
+				print('Node ', node, ' traversed ', path_length, 'hops')
 			hops[path_length] +=1
 
 		return spy_mapping, hops
@@ -746,7 +746,7 @@ class FirstSpyDiffusionSimulator(DiffusionSimulator):
 
 				# add next to boundary, remove the infecting node if it is eclipsed
 			if self.verbose:
-				print 'Node ', node, ' traversed ', path_length, 'hops'
+				print('Node ', node, ' traversed ', path_length, 'hops')
 
 		return spy_mapping
 
@@ -825,7 +825,7 @@ class FirstSpyDiffusionSimulatorAsymmetric(DiffusionSimulator):
 
 				# add next to boundary, remove the infecting node if it is eclipsed
 			if self.verbose:
-				print 'Node ', node, ' traversed ', path_length, 'hops'
+				print('Node ', node, ' traversed ', path_length, 'hops')
 
 
 		return spy_mapping
